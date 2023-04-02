@@ -5,7 +5,7 @@ function Navbar() {
   const { theme, setTheme } = useContext(GlobalContext);
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary mb-3">
+    <nav className="navbar navbar-expand-sm bg-body-tertiary mb-3">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
           Paycat
