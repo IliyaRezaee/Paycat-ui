@@ -1,14 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TransactionComponent from "../Transaction";
 import { Tag, TransactionType } from "../../types";
 import TransactionListSearchBar from "./TransactionListSearchBar";
 import TransactionContextProvider from "./TransactionListContext";
 import AddTransaction from "./AddTransaction";
+import useLocalStorage from "../../hooks/useLocalStorage";
+
+const { initialValue, setLocalStorage } = useLocalStorage();
 
 function TransactionList() {
   const [activeFilters, setActiveFilters] = useState<Tag[]>([]);
-  const [transactions, setTransactions] = useState<TransactionType[]>([]);
+  const [transactions, setTransactions] =
+    useState<TransactionType[]>(initialValue);
   const [query, setQuery] = useState<string>("");
+
+  useEffect(() => {
+    setLocalStorage(transactions);
+  }, [transactions]);
 
   const filteredTransactions =
     activeFilters.length > 0 || query.length > 0
