@@ -27,7 +27,7 @@ function AddTransaction() {
       tag: "Unpredicted",
     };
     setText("");
-    setPrice(0);
+    setPrice(1);
     setDate(moment().format(dateFormats.CALENDAR_INPUT));
     setTransactions((current) => [...current, newTransaction]);
   };
@@ -71,7 +71,7 @@ function AddTransaction() {
               <span className="input-group-text">$</span>
               <input
                 type="number"
-                min="0"
+                min="1"
                 className="form-control"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
