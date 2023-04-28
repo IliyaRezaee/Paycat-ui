@@ -1,8 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import moment from "moment";
 import { TransactionContext } from "./TransactionListContext";
 import { TransactionType } from "../../types";
 import { dateFormats } from "../../types";
+import useFetch from "../../hooks/useFetch";
 import "../../styles/AddTransaction.css";
 
 function AddTransaction() {
@@ -12,6 +13,9 @@ function AddTransaction() {
   const [date, setDate] = useState<string>(
     moment().format(dateFormats.CALENDAR_INPUT)
   );
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [fetchText, setFetchText] = useState<string>("");
+  const { data, loading, error } = useFetch(fetchText);
 
   const upDownFunction = (step: 1 | -1) => {
     setDate((prev) =>
@@ -19,18 +23,30 @@ function AddTransaction() {
     );
   };
 
-  const addTransaction = () => {
-    const newTransaction: TransactionType = {
-      text,
-      price,
-      date: moment(date),
-      tag: "Unpredicted",
-    };
-    setText("");
-    setPrice(0);
-    setDate(moment().format(dateFormats.CALENDAR_INPUT));
-    setTransactions((current) => [...current, newTransaction]);
-  };
+  useEffect(() => {
+    if (isSubmitted && !loading) {
+      const newTransaction: TransactionType = {
+        text,
+        price,
+        date: moment(date),
+        tag: "Unpredicted",
+      };
+
+      if (error) {
+        // TODO: handle error
+        console.error(error);
+      } else if (data) {
+        newTransaction.tag = data.tag;
+      }
+
+      setText("");
+      setPrice(1);
+      setDate(moment().format(dateFormats.CALENDAR_INPUT));
+      setIsSubmitted(false);
+      setFetchText("");
+      setTransactions((current) => [...current, newTransaction]);
+    }
+  }, [loading]);
 
   return (
     <div className="mb-3">
@@ -50,7 +66,8 @@ function AddTransaction() {
           className="d-flex align-items-center responsive gap-3 w-100 mt-3"
           onSubmit={(e) => {
             e.preventDefault();
-            addTransaction();
+            setFetchText(text);
+            setIsSubmitted(true);
           }}
         >
           <div style={{ flexGrow: 1 }}>
@@ -71,7 +88,7 @@ function AddTransaction() {
               <span className="input-group-text">$</span>
               <input
                 type="number"
-                min="0"
+                min="1"
                 className="form-control"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
@@ -134,12 +151,23 @@ function AddTransaction() {
               </svg>
             </button>
           </div>
-          <input
+          <button
             className="btn btn-primary"
             type="submit"
             style={{ alignSelf: "center" }}
-            value="Add"
-          />
+            disabled={loading}
+          >
+            {loading && (
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            )}
+            <span className="ms-2">
+              {loading ? "Waiting for server's response" : "Add"}
+            </span>
+          </button>
         </form>
       </div>
     </div>

@@ -47,9 +47,8 @@ function TransactionListSearchBar() {
             </button>
             <ul className="dropdown-menu">
               {Object.entries(TagColors).map(([tag, color]) => (
-                <li>
+                <li key={tag}>
                   <button
-                    key={tag}
                     className="dropdown-item btn"
                     style={
                       {
@@ -69,9 +68,9 @@ function TransactionListSearchBar() {
       {activeFilters.length > 0 && (
         <div className="d-flex align-items-center gap-2 mt-3 flex-wrap">
           <span>Tags:</span>
-          {activeFilters.map((tag, i) => (
+          {activeFilters.map((tag) => (
             <button
-              key={i}
+              key={tag}
               className="btn badge"
               style={
                 {

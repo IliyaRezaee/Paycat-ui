@@ -14,6 +14,8 @@ function TransactionList() {
     useState<TransactionType[]>(initialValue);
   const [query, setQuery] = useState<string>("");
 
+  // TODO: send unpredicted texts to the server
+
   useEffect(() => {
     setLocalStorage(transactions);
   }, [transactions]);
